@@ -69,7 +69,7 @@ Escucha tu historia es una plataforma completa diseñada para que cualquier visi
 Clona el repositorio:
 
 ```bash
-git clonehttps://github.com/MireyaCueto/Backend_TFG.git
+git clone https://github.com/MireyaCueto/Backend_TFG.git
 cd escucha-tu-historia
 ```
 

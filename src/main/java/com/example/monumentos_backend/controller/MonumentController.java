@@ -26,7 +26,7 @@ public class MonumentController {
     }
 
     @GetMapping("/public/monuments/{id}")
-    public ResponseEntity<Monument> getMonumentById(String id) {
+    public ResponseEntity<Monument> getMonumentById(@PathVariable String id) {
         Optional<Monument> monument = monumentService.getById(id);
         return monument.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }

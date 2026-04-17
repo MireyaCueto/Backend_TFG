@@ -26,7 +26,8 @@ public class MonumentService {
     }
 
     public Optional<Monument> getById(String id) {
-        return monumentRepository.findById(UUID.fromString(id));
+        // return monumentRepository.findById(UUID.fromString(id));
+        return monumentRepository.findById(id);
     }
 
     public void deleteById(String id) {

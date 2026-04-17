@@ -10,13 +10,14 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "rutas")
-@Getter @Setter
+@Table(name = "rutes")
+@Getter
+@Setter
 public class Ruta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     private String name;
 

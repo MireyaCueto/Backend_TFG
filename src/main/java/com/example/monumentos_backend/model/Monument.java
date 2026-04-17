@@ -8,7 +8,8 @@ import java.util.List;
 
 @Entity
 @Table(name = "monumento")
-@Getter @Setter
+@Getter
+@Setter
 public class Monument {
 
     @Id
@@ -46,9 +47,7 @@ public class Monument {
 
     // Relación Many-to-Many con Rutas a través de la tabla intermedia
     @ManyToMany
-    @JoinTable(name = "rules_monumentos",
-            joinColumns = @JoinColumn(name = "id_monumento"),
-            inverseJoinColumns = @JoinColumn(name = "id_rules"))
+    @JoinTable(name = "rutes_monumentos", joinColumns = @JoinColumn(name = "id_monumento"), inverseJoinColumns = @JoinColumn(name = "id_rutes"))
     private List<Ruta> rutas;
 
     @Column(name = "created_at")
