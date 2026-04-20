@@ -31,6 +31,6 @@ public class MonumentService {
     }
 
     public void deleteById(String id) {
-        monumentRepository.deleteById(UUID.fromString(id));
+        monumentRepository.deleteById(id);
     }
 }
