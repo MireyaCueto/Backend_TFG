@@ -24,14 +24,39 @@ public class RouteController {
 
     // EndPoints Publicos
 
-    @GetMapping("/public/routes")
+    @GetMapping("/public/route")
     public List<Ruta> getAllRoutes() {
         return routeService.findAll();
     }
 
-    @GetMapping("/public/routes/{id}")
+    @GetMapping("/public/route/{id}")
     public ResponseEntity<Ruta> getRouteById(@PathVariable String id) {
         Optional<Ruta> route = routeService.getById(id);
         return route.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    // Endpoints Privados
+
+    @PostMapping("/admin/route")
+    public Ruta saveRoute(@RequestBody Ruta route) {
+        return routeService.save(route);
+    }
+
+    @PutMapping("/admin/route/{id}")
+    public ResponseEntity<Ruta> updateRoute(@PathVariable String id, @RequestBody Ruta routeUpdated) {
+        if (!routeService.getById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        routeUpdated.setId(id);
+        return ResponseEntity.ok(routeService.save(routeUpdated));
+    }
+
+    @DeleteMapping("/admin/route/{id}")
+    public ResponseEntity<Void> deleteRoute(@PathVariable String id) {
+        if (!routeService.getById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        routeService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

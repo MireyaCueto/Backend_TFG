@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
         "id",
         "name",
         "description",
+        "isActive",
         "difficult",
         "monuments",
         "tag",
@@ -43,6 +44,10 @@ public class Ruta {
     @Column(columnDefinition = "TEXT")
     @JsonProperty("description")
     private String description;
+
+    @Column(name = "active")
+    @JsonProperty("isActive")
+    private Boolean activate;
 
     @JsonProperty("difficult")
     private Integer difficult;

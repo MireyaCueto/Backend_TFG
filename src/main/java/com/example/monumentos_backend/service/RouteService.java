@@ -31,19 +31,29 @@ public class RouteService {
                 .map(route -> this.calculateRouteStats(route));
     }
 
+    public Ruta save(Ruta route) {
+        return routeRepository.save(route);
+    }
+
+    public void deleteById(String id) {
+        routeRepository.deleteById(id);
+    }
+
     // Funciones adicionales
 
     // Funciones de calcultos de datos especificos
     private Ruta calculateRouteStats(Ruta route) {
         Monument monumentoAnterior = null;
-        // Suponiendo que la velocidad media de una persona haciendo turismo es de 0,833333m/s
+        // Suponiendo que la velocidad media de una persona haciendo turismo es de
+        // 0,833333m/s
         double velocidadMediaTurismo = 0.833333;
         double distanciaTotalMetros = 0.0;
         double tiempoEstimado = 0.0;
-        for(Monument monument : route.getMonuments()) {
-            if (monument.getActivate()){
-                if (monumentoAnterior == null) monumentoAnterior = monument;
-                else{
+        for (Monument monument : route.getMonuments()) {
+            if (monument.getActivate()) {
+                if (monumentoAnterior == null)
+                    monumentoAnterior = monument;
+                else {
                     distanciaTotalMetros += GeoUtils.teoremaHaversine(monument, monumentoAnterior);
                     monumentoAnterior = monument;
                 }
@@ -55,4 +65,5 @@ public class RouteService {
         route.setEstimatedTimeSeconds(tiempoEstimado);
         return route;
     }
+
 }
