@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.example.monumentos_backend.model.Monument;
+import com.example.monumentos_backend.utils.GeoUtils;
 import org.springframework.stereotype.Service;
 
 import com.example.monumentos_backend.model.Ruta;
@@ -33,8 +35,24 @@ public class RouteService {
 
     // Funciones de calcultos de datos especificos
     private Ruta calculateRouteStats(Ruta route) {
-        route.setTotalDistanceMeters(1.0);
-        route.setEstimatedTimeSeconds(1.0);
+        Monument monumentoAnterior = null;
+        // Suponiendo que la velocidad media de una persona haciendo turismo es de 0,833333m/s
+        double velocidadMediaTurismo = 0.833333;
+        double distanciaTotalMetros = 0.0;
+        double tiempoEstimado = 0.0;
+        for(Monument monument : route.getMonuments()) {
+            if (monument.getActivate()){
+                if (monumentoAnterior == null) monumentoAnterior = monument;
+                else{
+                    distanciaTotalMetros += GeoUtils.teoremaHaversine(monument, monumentoAnterior);
+                    monumentoAnterior = monument;
+                }
+            }
+        }
+        distanciaTotalMetros *= 1000;
+        tiempoEstimado = distanciaTotalMetros / velocidadMediaTurismo;
+        route.setTotalDistanceMeters(distanciaTotalMetros);
+        route.setEstimatedTimeSeconds(tiempoEstimado);
         return route;
     }
 }
