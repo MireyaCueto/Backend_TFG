@@ -54,7 +54,9 @@ public class Ruta {
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "rutes_monumentos", joinColumns = @JoinColumn(name = "id_rutes"), inverseJoinColumns = @JoinColumn(name = "id_monumento"))
+    @JoinTable(name = "rutes_monumentos", 
+                joinColumns = @JoinColumn(name = "id_rutes"), 
+                inverseJoinColumns = @JoinColumn(name = "id_monumento"))
     private List<Monument> monuments;
 
     // 2. Creamos un método que devuelva solo los IDs
@@ -89,4 +91,33 @@ public class Ruta {
     @JsonProperty("last_modified")
     private LocalDateTime lastModified;
 
+    //Comprobamos si la ruta tiene algún monumento activo para que pueda ser activada
+    public boolean canBeActive() {
+        if (this.monuments == null || this.monuments.isEmpty()) {
+            return false;
+        }
+
+        return this.monuments.stream().anyMatch(Monument::canBeActive);
+    }
+
+    @JsonProperty("monuments")
+    public void setMonumentsIds(List<String> ids){
+        if (ids != null){
+            this.monuments = ids.stream().map(id->{
+                Monument monument = new Monument();
+                monument.setId(id);
+                return monument;
+            }).collect(Collectors.toList());
+        }     
+    }
+
+    @JsonProperty("monuments")
+    public List<String> getMonumentsIds() {
+        if (this.monuments == null) {
+            return Collections.emptyList();
+        }
+        return this.monuments.stream()
+                .map(Monument::getId)
+                .collect(Collectors.toList());
+    }
 }

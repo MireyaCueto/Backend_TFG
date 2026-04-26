@@ -15,9 +15,11 @@ import com.example.monumentos_backend.repository.RouteRepository;
 public class RouteService {
 
     private final RouteRepository routeRepository;
+    private final MonumentRepository monumentRepository;
 
-    public RouteService(RouteRepository routeRepository) {
+    public RouteService(RouteRepository routeRepository,MonumentRepository monumentRepository) {
         this.routeRepository = routeRepository;
+        this.monumentRepository = monumentRepository;
     }
 
     public List<Ruta> findAll() {
@@ -32,6 +34,17 @@ public class RouteService {
     }
 
     public Ruta save(Ruta route) {
+        if (route.getMonuments() != null && !route.getMonuments().isEmpty()) {
+            List<Monument> realMonuments = route.getMonuments().stream()
+                    .map(m -> monumentRepository.findById(m.getId()).orElse(null))
+                    .filter(m -> m != null)
+                    .collect(Collectors.toList());
+            route.setMonuments(realMonuments);
+        }
+
+        if(Boolean.TRUE.equals(route.getActivate()) && !route.canBeActive()){
+            route.setActivate(false);
+        }
         return routeRepository.save(route);
     }
 

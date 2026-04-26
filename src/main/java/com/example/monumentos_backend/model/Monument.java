@@ -93,4 +93,9 @@ public class Monument {
     @JsonProperty("last_modified")
     @Column(name = "last_modified")
     private String lastModified;
+
+    // Devuelve cierto si el monumento puede estar activo
+    public boolean canBeActive() {
+        return Boolean.TRUE.equals(this.activate);
+    }
 }

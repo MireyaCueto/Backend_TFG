@@ -38,8 +38,8 @@ public class RouteController {
     // Endpoints Privados
 
     @PostMapping("/admin/route")
-    public Ruta saveRoute(@RequestBody Ruta route) {
-        return routeService.save(route);
+    public ResponseEntity<Ruta> saveRoute(@RequestBody Ruta route) {
+        return ResponseEntity.ok(routeService.save(route));
     }
 
     @PutMapping("/admin/route/{id}")
@@ -47,6 +47,7 @@ public class RouteController {
         if (!routeService.getById(id).isPresent()) {
             return ResponseEntity.notFound().build();
         }
+
         routeUpdated.setId(id);
         return ResponseEntity.ok(routeService.save(routeUpdated));
     }
