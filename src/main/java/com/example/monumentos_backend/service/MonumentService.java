@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class MonumentService {
@@ -31,6 +30,6 @@ public class MonumentService {
     }
 
     public void deleteById(String id) {
-        monumentRepository.deleteById(UUID.fromString(id));
+        monumentRepository.deleteById(id);
     }
 }

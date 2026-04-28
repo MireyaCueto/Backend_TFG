@@ -1,0 +1,10 @@
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.application.name=monumentos_backend
+
+spring.datasource.url=jdbc:postgresql://tu-host:5432/tu-db
+spring.datasource.username=tu-usuario
+spring.datasource.password=tu-contraseña
+spring.jpa.show-sql=true
+
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
