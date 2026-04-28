@@ -1,16 +1,14 @@
 package com.example.monumentos_backend.controller;
 
 import com.example.monumentos_backend.model.Ruta;
+import com.example.monumentos_backend.model.Score;
 import com.example.monumentos_backend.service.RouteService;
 
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -35,16 +33,26 @@ public class RouteController {
         return route.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @PostMapping("/public/route/{routeId}/score")
+    public ResponseEntity<Score> addScoreToRoute(@PathVariable String routeId, @RequestBody Score score) {
+        if (!routeService.existsById(routeId)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        score.setRouteId(routeId);
+        return ResponseEntity.ok(routeService.saveScore(score));
+    }
+
     // Endpoints Privados
 
     @PostMapping("/admin/route")
-    public ResponseEntity<Ruta> saveRoute(@RequestBody Ruta route) {
+    public ResponseEntity<Optional<Ruta>> saveRoute(@RequestBody Ruta route) {
         return ResponseEntity.ok(routeService.save(route));
     }
 
     @PutMapping("/admin/route/{id}")
-    public ResponseEntity<Ruta> updateRoute(@PathVariable String id, @RequestBody Ruta routeUpdated) {
-        if (!routeService.getById(id).isPresent()) {
+    public ResponseEntity<Optional<Ruta>> updateRoute(@PathVariable String id, @RequestBody Ruta routeUpdated) {
+        if (!routeService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
 

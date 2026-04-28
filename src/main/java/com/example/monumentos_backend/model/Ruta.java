@@ -25,9 +25,9 @@ import java.util.stream.Collectors;
         "difficult",
         "monuments",
         "tag",
+        "average_score",
         "total_distance_meters",
         "estimated_time_seconds",
-
         "created_at",
         "last_update"
 })
@@ -54,26 +54,17 @@ public class Ruta {
 
     @JsonIgnore
     @ManyToMany
-    @JoinTable(name = "rutes_monumentos", 
-                joinColumns = @JoinColumn(name = "id_rutes"), 
-                inverseJoinColumns = @JoinColumn(name = "id_monumento"))
+    @JoinTable(name = "rutes_monumentos", joinColumns = @JoinColumn(name = "id_rutes"), inverseJoinColumns = @JoinColumn(name = "id_monumento"))
     private List<Monument> monuments;
-
-    // 2. Creamos un método que devuelva solo los IDs
-    @JsonProperty("monuments")
-    public List<String> getMonumentsIds() {
-        if (this.monuments == null) {
-            return Collections.emptyList();
-        }
-        return this.monuments.stream()
-                .map(Monument::getId)
-                .collect(Collectors.toList());
-    }
 
     @JsonProperty("tag")
     @ManyToOne
     @JoinColumn(name = "tag_id")
     private Tag tag;
+
+    @Transient
+    @JsonProperty("average_score")
+    private Double averageScore;
 
     @Transient
     @JsonProperty("total_distance_meters")
@@ -83,7 +74,7 @@ public class Ruta {
     @JsonProperty("estimated_time_seconds")
     private Double estimatedTimeSeconds;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
 
@@ -91,7 +82,8 @@ public class Ruta {
     @JsonProperty("last_modified")
     private LocalDateTime lastModified;
 
-    //Comprobamos si la ruta tiene algún monumento activo para que pueda ser activada
+    // Comprobamos si la ruta tiene algún monumento activo para que pueda ser
+    // activada
     public boolean canBeActive() {
         if (this.monuments == null || this.monuments.isEmpty()) {
             return false;
@@ -101,14 +93,14 @@ public class Ruta {
     }
 
     @JsonProperty("monuments")
-    public void setMonumentsIds(List<String> ids){
-        if (ids != null){
-            this.monuments = ids.stream().map(id->{
+    public void setMonumentsIds(List<String> ids) {
+        if (ids != null) {
+            this.monuments = ids.stream().map(id -> {
                 Monument monument = new Monument();
                 monument.setId(id);
                 return monument;
             }).collect(Collectors.toList());
-        }     
+        }
     }
 
     @JsonProperty("monuments")

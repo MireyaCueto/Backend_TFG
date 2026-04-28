@@ -1,5 +1,6 @@
 package com.example.monumentos_backend.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,17 +10,25 @@ import com.example.monumentos_backend.utils.GeoUtils;
 import org.springframework.stereotype.Service;
 
 import com.example.monumentos_backend.model.Ruta;
+import com.example.monumentos_backend.model.Score;
+import com.example.monumentos_backend.repository.MonumentRepository;
 import com.example.monumentos_backend.repository.RouteRepository;
+import com.example.monumentos_backend.repository.ScoreRepository;
 
 @Service
 public class RouteService {
 
     private final RouteRepository routeRepository;
     private final MonumentRepository monumentRepository;
+    private final ScoreRepository scoreRepository;
 
-    public RouteService(RouteRepository routeRepository,MonumentRepository monumentRepository) {
+    public RouteService(
+            RouteRepository routeRepository,
+            MonumentRepository monumentRepository,
+            ScoreRepository scoreRepository) {
         this.routeRepository = routeRepository;
         this.monumentRepository = monumentRepository;
+        this.scoreRepository = scoreRepository;
     }
 
     public List<Ruta> findAll() {
@@ -33,19 +42,31 @@ public class RouteService {
                 .map(route -> this.calculateRouteStats(route));
     }
 
-    public Ruta save(Ruta route) {
-        if (route.getMonuments() != null && !route.getMonuments().isEmpty()) {
+    public boolean existsById(String id) {
+        return routeRepository.existsById(id);
+    }
+
+    public Optional<Ruta> save(Ruta route) {
+        if (route.getId() == null) {
+            route.setCreatedAt(LocalDateTime.now());
+        }
+        route.setLastModified(LocalDateTime.now());
+
+        if (route.getMonuments() != null) {
             List<Monument> realMonuments = route.getMonuments().stream()
-                    .map(m -> monumentRepository.findById(m.getId()).orElse(null))
-                    .filter(m -> m != null)
+                    .map(monument -> monumentRepository.findById(monument.getId()).orElse(null))
+                    .filter(monument -> monument != null)
                     .collect(Collectors.toList());
             route.setMonuments(realMonuments);
         }
 
-        if(Boolean.TRUE.equals(route.getActivate()) && !route.canBeActive()){
+        if (Boolean.TRUE.equals(route.getActivate()) && !route.canBeActive()) {
             route.setActivate(false);
         }
-        return routeRepository.save(route);
+
+        Ruta savedRoute = routeRepository.save(route);
+
+        return getById(savedRoute.getId());
     }
 
     public void deleteById(String id) {
@@ -62,6 +83,8 @@ public class RouteService {
         double velocidadMediaTurismo = 0.833333;
         double distanciaTotalMetros = 0.0;
         double tiempoEstimado = 0.0;
+        double averageScore = scoreRepository.getAverageScoreByRouteId(route.getId()) == null ? 0
+                : scoreRepository.getAverageScoreByRouteId(route.getId());
         for (Monument monument : route.getMonuments()) {
             if (monument.getActivate()) {
                 if (monumentoAnterior == null)
@@ -76,7 +99,13 @@ public class RouteService {
         tiempoEstimado = distanciaTotalMetros / velocidadMediaTurismo;
         route.setTotalDistanceMeters(distanciaTotalMetros);
         route.setEstimatedTimeSeconds(tiempoEstimado);
+        route.setAverageScore(averageScore != 0.0 ? averageScore : 0.0);
+
         return route;
+    }
+
+    public Score saveScore(Score score) {
+        return scoreRepository.save(score);
     }
 
 }
