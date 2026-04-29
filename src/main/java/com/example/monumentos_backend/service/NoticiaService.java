@@ -42,4 +42,14 @@ public class NoticiaService {
     public void deleteById(String id) {
         noticiaRepository.deleteById(id);
     }
+
+    public Optional<Noticia> publishNoticia(String id) {
+        System.out.println("cambiando la noticia con id" + id);
+        return noticiaRepository.findById(id).map(noticia -> {
+            noticia.setEstado(2); // 2 = Publicado
+            noticia.setFecha_publicacion(LocalDateTime.now());
+            noticia.setLastModified(LocalDateTime.now());
+            return noticiaRepository.save(noticia);
+        });
+    }
 }

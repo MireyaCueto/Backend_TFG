@@ -47,6 +47,12 @@ public class Noticia {
     @JsonProperty("estado")
     private Integer estado;
 
+    /*
+     * - 0 Borrador
+     * - 1 Desactivada
+     * - 2 Publicada
+     */
+
     @Column(name = "fecha_publicacion")
     @JsonProperty("fecha_publicacion")
     private LocalDateTime fecha_publicacion;
