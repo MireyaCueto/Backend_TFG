@@ -9,6 +9,8 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "noticias")
 @Getter
@@ -71,4 +73,5 @@ public class Noticia {
     @Column(name = "last_modified")
     @JsonProperty("last_modified")
     private LocalDateTime lastModified;
+
 }

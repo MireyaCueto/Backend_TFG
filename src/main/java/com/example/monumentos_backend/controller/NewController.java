@@ -61,7 +61,6 @@ public class NewController {
 
     @PutMapping("/admin/news/{id}/publish")
     public ResponseEntity<Noticia> publishNews(@PathVariable String id) {
-        System.out.println("hola");
         Optional<Noticia> noticiaPublicada = noticiaService.publishNoticia(id);
 
         return noticiaPublicada.map(ResponseEntity::ok)
