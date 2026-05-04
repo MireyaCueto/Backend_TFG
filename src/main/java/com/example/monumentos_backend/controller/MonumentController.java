@@ -25,7 +25,8 @@ public class MonumentController {
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String tag,
             @RequestParam(required = false) Boolean accessibility,
-            @RequestParam(name = "isActive", required = false) Boolean activate
+            @RequestParam(name = "isActive", required = false) Boolean activate,
+            @RequestParam(required = false) String orderBy
     ) {
 
         System.out.println("name = " + name);
@@ -33,7 +34,7 @@ public class MonumentController {
         System.out.println("accessibility = " + accessibility);
         System.out.println("activate = " + activate);
 
-        return monumentService.findByFilters(name, tag, accessibility, activate);
+        return monumentService.findByFilters(name, tag, accessibility, activate, orderBy);
     }
 
     @GetMapping("/public/monuments/{id}")
