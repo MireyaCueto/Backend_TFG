@@ -1,12 +1,15 @@
 package com.example.monumentos_backend.service;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.monumentos_backend.model.Monument;
+import com.example.monumentos_backend.specification.RouteSpecifications;
 import com.example.monumentos_backend.utils.GeoUtils;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.example.monumentos_backend.model.Ruta;
@@ -35,6 +38,26 @@ public class RouteService {
         return routeRepository.findAll().stream()
                 .map(route -> this.calculateRouteStats(route))
                 .collect(Collectors.toList());
+    }
+
+    public List<Ruta> findByFilters(
+            String name,
+            Boolean activate,
+            String tag,
+            String sortBy,
+            String orderBy
+    ) {
+        Specification<Ruta> spec = Specification.where(RouteSpecifications.hasName(name)
+                .and(RouteSpecifications.isActive(activate))
+                .and(RouteSpecifications.hasTag(tag)));
+
+        List<Ruta> routes = routeRepository.findAll(spec).stream()
+                .map(this::calculateRouteStats)
+                .toList();
+
+        routes.sort(getRouteComparator(sortBy, orderBy));
+
+        return routes;
     }
 
     public Optional<Ruta> getById(String id) {
@@ -103,6 +126,55 @@ public class RouteService {
 
         return route;
     }
+
+    private Comparator<Ruta> getRouteComparator(String sortBy, String orderBy) {
+        boolean ascending = "asc".equalsIgnoreCase(orderBy);
+
+        String normalizedSortBy = sortBy == null || sortBy.isBlank()
+                ? "createdAt"
+                : sortBy.trim().toLowerCase();
+
+        return switch (normalizedSortBy) {
+            case "difficult", "difficulty" -> Comparator.comparing(
+                    Ruta::getDifficult,
+                    nullableComparator(ascending)
+            );
+
+            case "averagescore", "average_score" -> Comparator.comparing(
+                    Ruta::getAverageScore,
+                    nullableComparator(ascending)
+            );
+
+            case "totaldistancemeters", "total_distance_meters" -> Comparator.comparing(
+                    Ruta::getTotalDistanceMeters,
+                    nullableComparator(ascending)
+            );
+
+            case "estimatedtimeseconds", "estimated_time_seconds" -> Comparator.comparing(
+                    Ruta::getEstimatedTimeSeconds,
+                    nullableComparator(ascending)
+            );
+
+            case "createdat", "created_at" -> Comparator.comparing(
+                    Ruta::getCreatedAt,
+                    nullableComparator(ascending)
+            );
+
+            default -> Comparator.comparing(
+                    Ruta::getCreatedAt,
+                    nullableComparator(false)
+            );
+        };
+    }
+
+    private static <T extends Comparable<? super T>> Comparator<T> nullableComparator(boolean ascending) {
+        Comparator<T> comparator = ascending
+                ? Comparator.naturalOrder()
+                : Comparator.reverseOrder();
+
+        return Comparator.nullsLast(comparator);
+    }
+
 
     public Score saveScore(Score score) {
         return scoreRepository.save(score);

@@ -23,8 +23,14 @@ public class RouteController {
     // EndPoints Publicos
 
     @GetMapping("/public/route")
-    public List<Ruta> getAllRoutes() {
-        return routeService.findAll();
+    public List<Ruta> getAllRoutes(
+            @RequestParam(required = false) String name,
+            @RequestParam(name = "isActive", required = false) Boolean activate,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) String sortBy,
+            @RequestParam(required = false) String orderBy
+    ) {
+        return routeService.findByFilters(name, activate, tag, sortBy, orderBy);
     }
 
     @GetMapping("/public/route/{id}")

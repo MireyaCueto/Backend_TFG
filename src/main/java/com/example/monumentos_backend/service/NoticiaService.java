@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.example.monumentos_backend.model.Noticia;
@@ -27,8 +28,16 @@ public class NoticiaService {
         return noticiaRepository.save(noticia);
     }
 
-    public List<Noticia> findAll() {
-        return noticiaRepository.findAll();
+    public List<Noticia> findAll(String orderBy) {
+        Sort.Direction direction = Sort.Direction.DESC;
+
+        if (orderBy != null && !orderBy.isBlank()) {
+            direction = "asc".equalsIgnoreCase(orderBy)
+                    ? Sort.Direction.ASC
+                    : Sort.Direction.DESC;
+        }
+
+        return noticiaRepository.findAll(Sort.by(direction, "createdAt"));
     }
 
     public Optional<Noticia> getById(String id) {
