@@ -1,6 +1,7 @@
 package com.example.monumentos_backend.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -51,9 +52,11 @@ public class RouteService {
                 .and(RouteSpecifications.isActive(activate))
                 .and(RouteSpecifications.hasTag(tag)));
 
-        List<Ruta> routes = routeRepository.findAll(spec).stream()
+        List<Ruta> rutasInmutables = routeRepository.findAll(spec).stream()
                 .map(this::calculateRouteStats)
                 .toList();
+
+        List<Ruta> routes = new ArrayList<>(rutasInmutables);
 
         routes.sort(getRouteComparator(sortBy, orderBy));
 

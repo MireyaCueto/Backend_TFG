@@ -33,10 +33,13 @@ public class RouteSpecifications {
 
             String normalizedTag = tag.trim().toUpperCase();
 
-            return criteriaBuilder.like(
-                    criteriaBuilder.upper(root.join("tag", JoinType.LEFT).get("name")),
-                    "%" + normalizedTag + "%"
-            );
+            try {
+                Integer tagId = Integer.parseInt(normalizedTag.trim());
+                return criteriaBuilder.equal(root.join("tag", JoinType.LEFT).get("id"), tagId);
+
+            } catch (NumberFormatException e) {
+                return null;
+            }
         });
     }
 }
