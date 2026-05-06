@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.OnDeleteAction;
+
 @Entity
 @Table(name = "rutes")
 @Getter
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
         "difficult",
         "monuments",
         "tag",
+        "localidad_id",
         "average_score",
         "total_distance_meters",
         "estimated_time_seconds",
@@ -73,6 +76,10 @@ public class Ruta {
     @Transient
     @JsonProperty("estimated_time_seconds")
     private Double estimatedTimeSeconds;
+
+    @Column(name = "localidad_id")
+    @JsonProperty("localidad_id")
+    private Integer localidadId;
 
     @Column(name = "created_at", updatable = false)
     @JsonProperty("created_at")
