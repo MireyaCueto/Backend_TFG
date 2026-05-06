@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -30,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
         "description",
         "picture",
         "audio",
+        "localidad_id",
         "created_at",
         "last_update"
 })
@@ -87,6 +90,10 @@ public class Monument {
     @JsonProperty("audio")
     @OneToMany(mappedBy = "monument", cascade = CascadeType.ALL)
     private List<Audio> audios;
+
+    @Column(name = "localidad_id")
+    @JsonProperty("localidad_id")
+    private Integer localidadId;
 
     @JsonProperty("created_at")
     @Column(name = "created_at")

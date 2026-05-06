@@ -41,6 +41,7 @@ public class NewController {
 
     @PutMapping("/admin/news/{id}")
     public ResponseEntity<Noticia> updateNews(@PathVariable String id, @RequestBody Noticia noticiaUpdated) {
+        System.out.println("hola");
         if (!noticiaService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -56,5 +57,13 @@ public class NewController {
         }
         noticiaService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/admin/news/{id}/publish")
+    public ResponseEntity<Noticia> publishNews(@PathVariable String id) {
+        Optional<Noticia> noticiaPublicada = noticiaService.publishNoticia(id);
+
+        return noticiaPublicada.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }
