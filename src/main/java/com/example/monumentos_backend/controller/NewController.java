@@ -22,8 +22,8 @@ public class NewController {
     // --- Endpoints Públicos ---
 
     @GetMapping("/public/news")
-    public List<Noticia> getAllNews() {
-        return noticiaService.findAll();
+    public List<Noticia> getAllNews(@RequestParam(required = false) String orderBy) {
+        return noticiaService.findAll(orderBy);
     }
 
     @GetMapping("/public/news/{id}")

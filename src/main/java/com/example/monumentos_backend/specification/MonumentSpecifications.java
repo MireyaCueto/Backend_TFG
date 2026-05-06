@@ -1,8 +1,6 @@
 package com.example.monumentos_backend.specification;
 
 import com.example.monumentos_backend.model.Monument;
-import com.example.monumentos_backend.model.Tag;
-import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import org.springframework.data.jpa.domain.Specification;
 
