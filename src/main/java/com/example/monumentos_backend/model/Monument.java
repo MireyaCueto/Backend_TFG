@@ -43,7 +43,9 @@ public class Monument {
     private String id;
 
     private String name;
+
     @JsonProperty("isActive")
+    @Column(name = "activate")
     private Boolean activate;
     @JsonIgnore
     private Double lat;

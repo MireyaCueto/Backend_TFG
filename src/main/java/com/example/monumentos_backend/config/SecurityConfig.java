@@ -22,8 +22,8 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // TODO retirar cuando se suba a prod
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // Solo administradores
                         .requestMatchers("/api/v1/public/**").permitAll() // Acceso libre
+                        .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // Solo administradores
                         .anyRequest().authenticated()) // El resto necesita login
                 .httpBasic(Customizer.withDefaults()); // Autenticación básica para pruebas rápidas
 

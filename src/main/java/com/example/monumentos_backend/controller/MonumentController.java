@@ -21,8 +21,20 @@ public class MonumentController {
     // Endpoints Públicos
 
     @GetMapping("/public/monuments")
-    public List<Monument> getAllMonuments() {
-        return monumentService.findAll();
+    public List<Monument> getAllMonuments(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String tag,
+            @RequestParam(required = false) Boolean accessibility,
+            @RequestParam(name = "isActive", required = false) Boolean activate,
+            @RequestParam(required = false) String orderBy
+    ) {
+
+        System.out.println("name = " + name);
+        System.out.println("tag = " + tag);
+        System.out.println("accessibility = " + accessibility);
+        System.out.println("activate = " + activate);
+
+        return monumentService.findByFilters(name, tag, accessibility, activate, orderBy);
     }
 
     @GetMapping("/public/monuments/{id}")
