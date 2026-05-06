@@ -24,14 +24,17 @@ public class MonumentSpecifications {
         });
     }
 
-    public static Specification<Monument> hasTag(String tag) {
+    public static Specification<Monument> hasTag(String tagIdStr) {
         return ((root, query, criteriaBuilder) -> {
-            if (tag == null || tag.isBlank()) return null;
+            if (tagIdStr == null || tagIdStr.isBlank()) return null;
 
-            String normalizedTag = tag.trim().toUpperCase();
+            try {
+                Integer tagId = Integer.parseInt(tagIdStr.trim());
+                return criteriaBuilder.equal(root.join("tag", JoinType.LEFT).get("id"), tagId);
 
-            return criteriaBuilder.like(criteriaBuilder.upper(root.join("tag", JoinType.LEFT).get("name")),
-                    "%" + normalizedTag + "%");
+            } catch (NumberFormatException e) {
+                return null;
+            }
         });
     }
 

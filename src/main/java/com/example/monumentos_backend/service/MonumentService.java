@@ -27,6 +27,7 @@ public class MonumentService {
             Boolean accessibility,
             Boolean activate,
             String orderBy) {
+
         // Combinamos las búsquedas con .and()
         Specification<Monument> spec = Specification.where(MonumentSpecifications.hasName(name))
                 .and(MonumentSpecifications.hasTag(tag))
