@@ -30,6 +30,7 @@ public class RouteController {
             @RequestParam(required = false) String sortBy,
             @RequestParam(required = false) String orderBy
     ) {
+        System.out.println("tag = " + tag);
         return routeService.findByFilters(name, activate, tag, sortBy, orderBy);
     }
 

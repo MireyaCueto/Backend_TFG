@@ -28,13 +28,8 @@ public class MonumentSpecifications {
         return ((root, query, criteriaBuilder) -> {
             if (tagIdStr == null || tagIdStr.isBlank()) return null;
 
-            try {
-                Integer tagId = Integer.parseInt(tagIdStr.trim());
-                return criteriaBuilder.equal(root.join("tag", JoinType.LEFT).get("id"), tagId);
-
-            } catch (NumberFormatException e) {
-                return null;
-            }
+            return criteriaBuilder.equal(root.join("tag", JoinType.LEFT).get("name"),
+                    tagIdStr.trim().toUpperCase());
         });
     }
 

@@ -52,11 +52,9 @@ public class RouteService {
                 .and(RouteSpecifications.isActive(activate))
                 .and(RouteSpecifications.hasTag(tag)));
 
-        List<Ruta> rutasInmutables = routeRepository.findAll(spec).stream()
+        List<Ruta> routes = routeRepository.findAll(spec).stream()
                 .map(this::calculateRouteStats)
-                .toList();
-
-        List<Ruta> routes = new ArrayList<>(rutasInmutables);
+                .collect(Collectors.toList());
 
         routes.sort(getRouteComparator(sortBy, orderBy));
 
@@ -131,43 +129,31 @@ public class RouteService {
     }
 
     private Comparator<Ruta> getRouteComparator(String sortBy, String orderBy) {
-        boolean ascending = "asc".equalsIgnoreCase(orderBy);
+        boolean descending = "desc".equalsIgnoreCase(orderBy);
 
-        String normalizedSortBy = sortBy == null || sortBy.isBlank()
-                ? "createdAt"
-                : sortBy.trim().toLowerCase();
+        // Si no viene campo, ordenamos por fecha de creación por defecto
+        String field = (sortBy == null || sortBy.isBlank()) ? "createdat" : sortBy.trim().toLowerCase();
 
-        return switch (normalizedSortBy) {
-            case "difficult", "difficulty" -> Comparator.comparing(
-                    Ruta::getDifficult,
-                    nullableComparator(ascending)
-            );
+        // Creamos el comparador base según el campo
+        Comparator<Ruta> comparator = switch (field) {
+            case "difficult", "difficulty" ->
+                    Comparator.comparing(Ruta::getDifficult, Comparator.nullsLast(Comparator.naturalOrder()));
 
-            case "averagescore", "average_score" -> Comparator.comparing(
-                    Ruta::getAverageScore,
-                    nullableComparator(ascending)
-            );
+            case "averagescore", "average_score" ->
+                    Comparator.comparing(Ruta::getAverageScore, Comparator.nullsLast(Comparator.naturalOrder()));
 
-            case "totaldistancemeters", "total_distance_meters" -> Comparator.comparing(
-                    Ruta::getTotalDistanceMeters,
-                    nullableComparator(ascending)
-            );
+            case "totaldistancemeters", "total_distance_meters" ->
+                    Comparator.comparing(Ruta::getTotalDistanceMeters, Comparator.nullsLast(Comparator.naturalOrder()));
 
-            case "estimatedtimeseconds", "estimated_time_seconds" -> Comparator.comparing(
-                    Ruta::getEstimatedTimeSeconds,
-                    nullableComparator(ascending)
-            );
+            case "estimatedtimeseconds", "estimated_time_seconds" ->
+                    Comparator.comparing(Ruta::getEstimatedTimeSeconds, Comparator.nullsLast(Comparator.naturalOrder()));
 
-            case "createdat", "created_at" -> Comparator.comparing(
-                    Ruta::getCreatedAt,
-                    nullableComparator(ascending)
-            );
-
-            default -> Comparator.comparing(
-                    Ruta::getCreatedAt,
-                    nullableComparator(false)
-            );
+            default -> // Por defecto createdat
+                    Comparator.comparing(Ruta::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
         };
+
+        // Si el orden es descendente, invertimos el comparador final
+        return descending ? comparator.reversed() : comparator;
     }
 
     private static <T extends Comparable<? super T>> Comparator<T> nullableComparator(boolean ascending) {

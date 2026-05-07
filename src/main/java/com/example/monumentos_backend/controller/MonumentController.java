@@ -28,12 +28,6 @@ public class MonumentController {
             @RequestParam(name = "isActive", required = false) Boolean activate,
             @RequestParam(required = false) String orderBy
     ) {
-
-        System.out.println("name = " + name);
-        System.out.println("tag = " + tag);
-        System.out.println("accessibility = " + accessibility);
-        System.out.println("activate = " + activate);
-
         return monumentService.findByFilters(name, tag, accessibility, activate, orderBy);
     }
 

@@ -19,11 +19,11 @@ public class RouteSpecifications {
         });
     }
 
-    public static Specification<Ruta> isActive(Boolean active) {
+    public static Specification<Ruta> isActive(Boolean activate) {
         return ((root, query, criteriaBuilder) -> {
-           if (active == null) return null;
+           if (activate == null) return null;
 
-           return criteriaBuilder.equal(root.get("active"), active);
+           return criteriaBuilder.equal(root.get("activate"), activate);
         });
     }
 
@@ -31,15 +31,8 @@ public class RouteSpecifications {
         return ((root, query, criteriaBuilder) -> {
             if (tag == null || tag.isBlank()) return null;
 
-            String normalizedTag = tag.trim().toUpperCase();
-
-            try {
-                Integer tagId = Integer.parseInt(normalizedTag.trim());
-                return criteriaBuilder.equal(root.join("tag", JoinType.LEFT).get("id"), tagId);
-
-            } catch (NumberFormatException e) {
-                return null;
-            }
+            return criteriaBuilder.equal(root.join("tag", JoinType.LEFT).get("name"),
+                    tag.trim().toUpperCase());
         });
     }
 }
