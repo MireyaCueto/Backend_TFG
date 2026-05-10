@@ -1,5 +1,6 @@
 package com.example.monumentos_backend.model;
 
+import com.example.monumentos_backend.dto.MonumentSummary;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -111,12 +112,12 @@ public class Ruta {
     }
 
     @JsonProperty("monuments")
-    public List<String> getMonumentsIds() {
+    public List<MonumentSummary> getMonumentsIds() {
         if (this.monuments == null) {
             return Collections.emptyList();
         }
         return this.monuments.stream()
-                .map(Monument::getId)
+                .map(MonumentSummary::new)
                 .collect(Collectors.toList());
     }
 }
