@@ -1,10 +1,14 @@
 package com.example.monumentos_backend.service;
 
 import com.example.monumentos_backend.model.Stat;
+import com.example.monumentos_backend.model.StatsIA;
 import com.example.monumentos_backend.repository.AppReviewRepository;
 import com.example.monumentos_backend.repository.StatRepository;
+import com.example.monumentos_backend.repository.StatsIARepository;
 import com.example.monumentos_backend.dto.GeneralStatResponse;
 import com.example.monumentos_backend.dto.StatAggregation;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -94,5 +98,31 @@ public class StatService {
 
     public List<StatAggregation> getYearlyStats(String serviceName) {
         return statRepository.getYearlyDownloads(serviceName);
+    }
+
+    // Servicio para peticiiones a la IA
+
+    @Autowired
+    private StatsIARepository statsRepository;
+
+    // Incrementa el contador de éxitos (+1)
+    public void registrarPeticionesTotales() {
+        statsRepository.incrementCount("peticiones_completas");
+    }
+
+    // Incrementa el contador de fallos (+1)
+    public void registrarPeticionFallida() {
+        statsRepository.incrementCount("peticiones_fallidas");
+    }
+
+    // Devuelve la lista completa (los dos registros)
+    public List<StatsIA> obtenerTodas() {
+        return statsRepository.findAll();
+    }
+
+    // Busca un contador específico por su nombre
+    public StatsIA obtenerPorNombre(String nombre) {
+        return statsRepository.findByNameCount(nombre)
+                .orElseThrow(() -> new RuntimeException("Estadística no encontrada: " + nombre));
     }
 }
