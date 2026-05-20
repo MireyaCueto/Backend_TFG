@@ -57,6 +57,8 @@ public class RouteController {
         return ResponseEntity.ok(routeService.save(route));
     }
 
+        //TODO PATCH ACTIVE Y RUTAS
+
     @PutMapping("/admin/route/{id}")
     public ResponseEntity<Optional<Ruta>> updateRoute(@PathVariable String id, @RequestBody Ruta routeUpdated) {
         if (!routeService.existsById(id)) {

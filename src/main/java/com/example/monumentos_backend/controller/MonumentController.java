@@ -44,6 +44,8 @@ public class MonumentController {
         return monumentService.save(monument);
     }
 
+    //TODO PATCH ACTIVE Y MONUMENTOS
+
     @PutMapping("/admin/monuments/{id}")
     public ResponseEntity<Monument> updateMonument(@PathVariable String id, @RequestBody Monument monumentUpdated) {
         if (!monumentService.getById(id).isPresent()) {

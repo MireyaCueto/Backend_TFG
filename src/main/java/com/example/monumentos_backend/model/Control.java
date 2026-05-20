@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @JsonPropertyOrder({
         "id",
         "name",
-        "active",
+        "isActive",
         "created_at",
         "last_modified"
 })
@@ -30,7 +30,7 @@ public class Control {
     private String name;
 
     @Column(name = "active")
-    @JsonProperty("active")
+    @JsonProperty("isActive")
     private Boolean active = true; // Por defecto a true
 
     @Column(name = "created_at", updatable = false)
