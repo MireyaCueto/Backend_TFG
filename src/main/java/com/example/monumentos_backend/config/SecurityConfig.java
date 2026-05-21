@@ -34,6 +34,7 @@ public class SecurityConfig {
                 }))
                 .csrf(csrf -> csrf.disable()) // TODO retirar cuando se suba a prod
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll() // Acceso libre
                         .requestMatchers("/api/v1/admin/**").hasRole("ADMIN") // Solo administradores
                         .anyRequest().authenticated()) // El resto necesita login
