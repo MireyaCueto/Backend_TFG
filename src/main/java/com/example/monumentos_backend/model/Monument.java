@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,11 +98,11 @@ public class Monument {
 
     @JsonProperty("created_at")
     @Column(name = "created_at")
-    private String createdAt;
+    private LocalDateTime createdAt;
 
     @JsonProperty("last_modified")
     @Column(name = "last_modified")
-    private String lastModified;
+    private LocalDateTime lastModified;
 
     // Devuelve cierto si el monumento puede estar activo
     public boolean canBeActive() {

@@ -93,6 +93,15 @@ public class RouteService {
         return getById(savedRoute.getId());
     }
 
+    public Ruta activateRoute(String id) {
+        Ruta ruta = routeRepository.findById(id).orElse(null);
+            if (ruta == null) {
+                return null;
+            }
+        ruta.setActivate(!ruta.getActivate());
+        return routeRepository.save(ruta);
+    }
+
     public void deleteById(String id) {
         routeRepository.deleteById(id);
     }

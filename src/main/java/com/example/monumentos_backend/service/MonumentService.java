@@ -59,7 +59,16 @@ public class MonumentService {
         // return monumentRepository.findById(UUID.fromString(id));
         return monumentRepository.findById(id);
     }
-
+    
+    public Monument activateMonument(String id) {
+        Monument monumento = monumentRepository.findById(id).orElse(null);
+        if (monumento == null) {
+            return null;
+        }
+        monumento.setActivate(!monumento.getActivate());
+        return monumentRepository.save(monumento);
+    }
+    
     public void deleteById(String id) {
         monumentRepository.deleteById(id);
     }

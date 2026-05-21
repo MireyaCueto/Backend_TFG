@@ -44,7 +44,15 @@ public class MonumentController {
         return monumentService.save(monument);
     }
 
-    //TODO PATCH ACTIVE Y MONUMENTOS
+    @PatchMapping("/admin/monuments/{id}/activate")
+    public ResponseEntity<Monument> activaMonument(@PathVariable String id) {   
+        Monument monumentoActualizado = monumentService.activateMonument(id);
+        System.out.println(monumentoActualizado);
+        if (monumentoActualizado == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(monumentoActualizado);
+    }
 
     @PutMapping("/admin/monuments/{id}")
     public ResponseEntity<Monument> updateMonument(@PathVariable String id, @RequestBody Monument monumentUpdated) {

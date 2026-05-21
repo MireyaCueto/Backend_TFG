@@ -1,5 +1,6 @@
 package com.example.monumentos_backend.controller;
 
+import com.example.monumentos_backend.model.Monument;
 import com.example.monumentos_backend.model.Ruta;
 import com.example.monumentos_backend.model.Score;
 import com.example.monumentos_backend.service.RouteService;
@@ -57,7 +58,14 @@ public class RouteController {
         return ResponseEntity.ok(routeService.save(route));
     }
 
-        //TODO PATCH ACTIVE Y RUTAS
+    @PatchMapping("/admin/route/{id}/activate")
+    public ResponseEntity<Ruta> activaRuta(@PathVariable String id) {   
+        Ruta rutaActualizada = routeService.activateRoute(id);
+        if (rutaActualizada == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(rutaActualizada);
+    }
 
     @PutMapping("/admin/route/{id}")
     public ResponseEntity<Optional<Ruta>> updateRoute(@PathVariable String id, @RequestBody Ruta routeUpdated) {
