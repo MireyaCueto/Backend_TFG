@@ -1,18 +1,34 @@
-# fly.toml app configuration file generated for backend-tfg on 2026-05-24T01:42:33Z
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
+# fly.toml — backend-tfg
+# Docs: https://fly.io/docs/reference/configuration/
 
 app = 'backend-tfg'
 primary_region = 'ams'
 
+[build]
+  dockerfile = 'Dockerfile'
+
+[env]
+  SERVER_PORT = '8080'
+  SPRING_PROFILES_ACTIVE = 'prod'
+
 [http_service]
-  auto_start_machines = true
-  auto_stop_machines = true
-  force_https = true
   internal_port = 8080
-  min_machines_running = 0
+  force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
   processes = ['app']
+
+  [http_service.concurrency]
+    type = 'requests'
+    hard_limit = 250
+    soft_limit = 200
+
+  # TCP: Spring Boot tarda en arrancar (conexión a Supabase)
+  [[http_service.tcp_checks]]
+    grace_period = '300s'
+    interval = '15s'
+    timeout = '5s'
 
 [[vm]]
   cpu_kind = 'shared'

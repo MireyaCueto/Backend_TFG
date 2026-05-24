@@ -6,6 +6,7 @@ import com.example.monumentos_backend.specification.MonumentSpecifications;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ public class MonumentService {
 
     // Busca aplicando los filtros dinámicos
     // Si los parámetros son nulos, ignora ese filtro
+    @Transactional(readOnly = true)
     public List<Monument> findByFilters(
             String name,
             String tag,
@@ -55,6 +57,7 @@ public class MonumentService {
         return monumentRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Optional<Monument> getById(String id) {
         // return monumentRepository.findById(UUID.fromString(id));
         return monumentRepository.findById(id);

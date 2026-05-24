@@ -2,6 +2,7 @@ package com.example.monumentos_backend.service;
 
 import com.example.monumentos_backend.model.Stat;
 import com.example.monumentos_backend.model.StatsIA;
+import com.example.monumentos_backend.model.AppReview;
 import com.example.monumentos_backend.repository.AppReviewRepository;
 import com.example.monumentos_backend.repository.StatRepository;
 import com.example.monumentos_backend.repository.StatsIARepository;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +88,25 @@ public class StatService {
 
         stat.setNDownloads(stat.getNDownloads() + 1);
         return statRepository.save(stat);
+    }
+
+    public AppReview saveReview(AppReview review) {
+        if (review.getIdDevice() == null || review.getIdDevice().isBlank()
+                || review.getNameService() == null || review.getNameService().isBlank()
+                || review.getScore() == null) {
+            throw new IllegalArgumentException("id_device, name_service y score son obligatorios");
+        }
+
+        return appReviewRepository
+                .findByIdDeviceAndNameService(review.getIdDevice(), review.getNameService())
+                .map(existing -> {
+                    existing.setScore(review.getScore());
+                    return appReviewRepository.save(existing);
+                })
+                .orElseGet(() -> {
+                    review.setCreatedAt(LocalDateTime.now());
+                    return appReviewRepository.save(review);
+                });
     }
 
     public List<StatAggregation> getDailyStats(String serviceName) {
