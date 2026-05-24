@@ -58,7 +58,7 @@ Escucha tu historia es una plataforma completa diseñada para que cualquier visi
 # 🚀 1. Requisitos previos
 
 - Flutter  
-- Java 17+ y Maven  
+- Java 21+ y Maven  
 - Cuenta en Supabase  
 - Git  
 
@@ -87,45 +87,50 @@ Esto iniciará:
 
 # 🔌 3. Endpoints principales del backend
 
-> [!WARNING]
-> (poner a posteriori los endpoints finales, estos son placeholders)
-
 | Módulo | Método | Endpoint | Descripción |
 |-------|--------|----------|-------------|
-| Monumentos | GET | /api/monuments | Lista todos los monumentos |
-| | POST | /api/monuments | Crea un monumento |
-| | PUT | /api/monuments/{id} | Actualiza un monumento |
-| | DELETE | /api/monuments/{id} | Elimina un monumento |
-| Rutas | GET | /api/routes | Devuelve rutas disponibles |
-| | POST | /api/routes | Crea una ruta |
-| Noticias | GET | /api/news | Lista noticias |
-| | POST | /api/news | Crea una noticia |
-| Parámetros | GET | /api/config | Obtiene parámetros globales |
-| | PUT | /api/config | Actualiza parámetros |
-| Estadísticas | GET | /api/stats | Devuelve estadísticas de uso |
+| Monumentos | GET | /api/v1/public/monuments | Lista todos los monumentos |
+|  | GET | /api/v1/public/monuments/{id} | Un monumento por según su id  |
+| | POST | /api/v1/admin/monuments | Crea un monumento |
+| | PATCH | /api/v1/admin/monuments/{id}/activate | Activa o desactiva un monumento |
+| | PUT | /api/v1/admin/monuments/{id} | Actualiza un monumento |
+| | DELETE | /api/v1/admin/monuments/{id} | Elimina un monumento |
+| Rutas | GET | /api/v1/public/routes | Devuelve rutas disponibles |
+|  | GET | /api/v1/public/routes/{id} | Una ruta por según su id  |
+| | POST | /api/v1/admin/routes | Crea una ruta |
+| | PATCH | /api/v1/admin/routes/{id}/activate | Activa o desactiva una ruta |
+| | PUT | /api/v1/admin/routes/{id} | Actualiza una ruta |
+| | DELETE | /api/v1/admin/routes/{id} | Elimina una ruta |
+| Noticias | GET | /api/v1/public/news | Lista noticias |
+|  | GET | /api/v1/public/news/{id} | Una noticia por según su id  |
+| | POST | /api/v1/admin/news | Crea una noticia |
+| | PUT | /api/v1/admin/news/{id}/publish | Publica una noticia |
+| | PUT | /api/v1/admin/news/{id} | Actualiza una noticia |
+| | DELETE | /api/v1/admin/news/{id} | Elimina una noticia |
+| Control | GET | /api/v1/public/control | Lista del estado de todos los controles |
+| | GET | /api/v1/public/control/{name} | Devuelve el estado del control indicado |
+| | PUT | /api/v1/admin/control/{name} | Cambia el estado actual de un control |
+| Estadísticas | GET | /api/v1/admin/stats/summary | Devuelve un resumen de todas las estadisticas |
+| | GET | /api/v1/admin/stats/{serviceName}/daily | Devuelve las estadisticas generadas el dia actual |
+| | GET | /api/v1/admin/stats/{serviceName}/monthly | Devuelve las estadisticas generadas el mes actual |
+| | GET | /api/v1/admin/stats/{serviceName}/yearly | Devuelve las estadisticas generadas el año actual |
+| | GET | /api/v1/admin/stats/new-request | Aumenta en uno la cantidad de peticiones a la IA |
+| | GET | /api/v1/admin/stats/fail-request | Aumenta en uno la cantidad de peticiones fallidas a la IA |
+| Health | GET | /health | Devuelve el estado actual del servidor |
+
 
 ---
 
 # 📚 4. Estructura del proyecto 
 
-> [!WARNING]
-> (poner a posteriori la estructura final, esto es un placeholder)
-
 ```
 escucha-tu-historia/
 │
-├── app/                 → App móvil Flutter
-│   ├── lib/
-│   └── assets/
-│
-├── admin/               → Panel de administración Flutter Web
-│   ├── lib/
-│   └── assets/
-│
-├── backend/             → API Spring Boot
-│   ├── src/main/java/
-│   ├── src/main/resources/
-│   └── application.properties
+├── src/             → API Spring Boot
+│   ├── src/main/java/com/example/monumentos_backend
+│   └── src/main/resources/
+│       ├── hibernate.cfg.xml
+│       └── application.properties
 │
 └── README.md
 ```
@@ -142,17 +147,27 @@ El backend y las apps necesitan conectarse a Supabase para:
 
 ## Variables necesarias en application.properties
 
-> [!WARNING]
-> (poner a posteriori las variables del properties necesarias, estas son placeholders)
-
 ```bash
-spring.datasource.url=jdbc:postgresql://db.supabase.co:5432/tu_db
-spring.datasource.username=tu_usuario
-spring.datasource.password=tu_password
+spring.application.name=monumentos_backend
 
-supabase.storage.url=https://tu-proyecto.supabase.co/storage/v1/object/public
-supabase.storage.bucket=monumentos
-supabase.api.key=tu_api_key
+# Fly.io / Docker: escuchar en todas las interfaces (obligatorio para el proxy)
+server.address=0.0.0.0
+server.port=${PORT:${SERVER_PORT:8080}}
+
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USERNAME}
+spring.datasource.password=${DB_PASSWORD}
+spring.datasource.hikari.connection-timeout=20000
+spring.datasource.hikari.maximum-pool-size=5
+
+# Configuraci?n JPA / Hibernate
+springdoc.swagger-ui.path=/api/v1/docs
+springdoc.api-docs.path=/api/v1/api-docs
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.naming.physical-strategy=org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
 ```
 > [!WARNING] 
 > No compartas la API key pública ni privada.
