@@ -61,6 +61,14 @@ public class Monument {
         return coords;
     }
 
+    @JsonProperty("coordenates") //Necesario para poder guardar las coordenadas que llegan desde web
+    public void setCoordenates(Map<String, Double> coords) {
+        if (coords != null) {
+            this.lat = coords.get("lat");
+            this.lon = coords.get("lon");
+        }
+    }
+
     @JsonProperty("accessibility")
     @Column(name = "accessibility")
     private Boolean accessibility;
