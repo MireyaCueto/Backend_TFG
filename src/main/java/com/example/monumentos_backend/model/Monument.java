@@ -105,7 +105,7 @@ public class Monument {
     private Integer localidadId;
 
     @JsonProperty("created_at")
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @JsonProperty("last_modified")

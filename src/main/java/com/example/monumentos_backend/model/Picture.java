@@ -20,7 +20,7 @@ public class Picture {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String url;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "last_modified")

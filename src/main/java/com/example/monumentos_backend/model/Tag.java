@@ -31,7 +31,7 @@ public class Tag {
     @JsonProperty("colorHex")
     private String colorHex;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable = false)
     private String createdAt;
 
     @Column(name = "last_modified")

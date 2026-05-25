@@ -50,22 +50,22 @@ public class MonumentService {
     }
 
     public Monument save(Monument monument) {
-    if (monument.getId() == null) {
-        monument.setCreatedAt(java.time.LocalDateTime.now());
-    }
-    monument.setLastModified(java.time.LocalDateTime.now());
-    if (monument.getPictures() != null) {
-        monument.getPictures().forEach(pic -> pic.setMonument(monument));
-    }
-    if (monument.getAudios() != null) {
-        monument.getAudios().forEach(audio -> audio.setMonument(monument));
-    }
-    if (monument.getDescriptions() != null) {
-        monument.getDescriptions().forEach(desc -> desc.setMonument(monument));
-    }
+        if (monument.getId() == null) {
+            monument.setCreatedAt(java.time.LocalDateTime.now());
+        }
+        monument.setLastModified(java.time.LocalDateTime.now());
+        if (monument.getPictures() != null) {
+            monument.getPictures().forEach(pic -> pic.setMonument(monument));
+        }
+        if (monument.getAudios() != null) {
+            monument.getAudios().forEach(audio -> audio.setMonument(monument));
+        }
+        if (monument.getDescriptions() != null) {
+            monument.getDescriptions().forEach(desc -> desc.setMonument(monument));
+        }
 
-    return monumentRepository.save(monument);
-}
+        return monumentRepository.save(monument);
+    }
 
     public List<Monument> findAll() {
         return monumentRepository.findAll();
