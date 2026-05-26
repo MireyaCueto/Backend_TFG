@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(request -> {
                     CorsConfiguration configuration = new CorsConfiguration();
                     configuration.setAllowedOrigins(
-                            List.of("http://localhost:8080", "https://backend-tfg-escuchatuhistoria.onrender.com", "https://backend-tfg.fly.dev"));
+                            List.of("http://localhost:8080", "https://backend-tfg-escuchatuhistoria.onrender.com", "https://backend-tfg.fly.dev", "https://web-audiogu-a-three.vercel.app"));
                     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                     configuration.setAllowedHeaders(List.of("*"));
                     configuration.setAllowCredentials(true);
